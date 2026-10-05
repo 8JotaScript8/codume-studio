@@ -4,10 +4,6 @@ Editor visual de DER com HTML, CSS e JavaScript modular. Crie tabelas e relacion
 
 ![Editor visual](docs/preview.png)
 
-## Versão 0.2 — código para estudar
-
-Esta versão reorganiza o protótipo de arquivo único em módulos JavaScript nativos, com comentários e testes incluídos. A interface e o formato JSON v1 foram preservados. A implementação inicial e esta refatoração foram feitas com auxílio do Codex.
-
 **Comece pelo [guia de leitura de código](docs/GUIA-DE-CODIGO.md).** Ele acompanha a criação de uma tabela linha por linha, depois explica validação, histórico, renderização, arquivos e arraste.
 
 ## Abrir no computador
