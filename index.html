@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Codume Studio — Editor de DER</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="logo">⌘</div>
+        codume <span>studio</span><span class="tag wide-only">DER LAB</span>
+      </div>
+      <div class="top-actions">
+        <button id="undo" title="Desfazer (Ctrl+Z)">↶</button
+        ><button id="redo" title="Refazer (Ctrl+Shift+Z)">↷</button
+        ><button id="new">Novo</button><button id="import">Importar</button
+        ><button id="export">Exportar JSON</button
+        ><button id="sql">SQL <span class="wide-only">PostgreSQL</span></button
+        ><button id="add" class="primary">+ Tabela</button>
+      </div>
+    </header>
+    <div class="shell">
+      <aside class="left">
+        <div class="eyebrow">Seu espaço de modelagem</div>
+        <input
+          id="project"
+          class="project"
+          aria-label="Nome do diagrama"
+          maxlength="80"
+        />
+        <p class="subtle">Do conceito ao banco de dados.</p>
+        <div class="divider"></div>
+        <div class="eyebrow">Tabelas <span id="count"></span></div>
+        <input
+          id="search"
+          placeholder="Buscar tabela…"
+          aria-label="Buscar tabela"
+        />
+        <nav class="entity-list" id="entity-list"></nav>
+        <div class="divider"></div>
+        <button id="sample" class="full">Abrir exemplo Codume</button>
+        <p class="hint">
+          Um ponto de partida para explorar usuários, perfis e tecnologias.
+        </p>
+        <button id="help" class="full">Como usar ↗</button>
+        <div class="note">
+          <b>Seu diagrama, no seu navegador.</b><br />Exporte um JSON para ter
+          um backup e continuar em outro dispositivo.
+        </div>
+      </aside>
+      <main>
+        <div id="viewport">
+          <div id="world">
+            <svg id="edges"></svg>
+            <div id="cards"></div>
+          </div>
+        </div>
+        <div class="canvas-label">
+          <strong>Um espaço para suas ideias.</strong>
+          <p>
+            Arraste tabelas · Arraste o fundo para navegar · Role para ampliar
+          </p>
+        </div>
+        <div id="empty" class="empty-canvas" hidden>
+          <b>Tudo começa com uma tabela.</b>Use “+ Tabela” para desenhar seu
+          primeiro modelo.
+        </div>
+        <div class="zoom-tools">
+          <button id="minus" aria-label="Diminuir zoom">−</button
+          ><span id="zoom">100%</span
+          ><button id="plus" aria-label="Aumentar zoom">+</button
+          ><button id="fit">Enquadrar</button>
+        </div>
+        <div class="canvas-legend">
+          PK chave primária · FK chave estrangeira · UQ único
+        </div>
+      </main>
+      <aside id="inspector" class="right"></aside>
+    </div>
+    <footer>
+      <span id="status" class="saved">● Pronto</span><span id="stats"></span
+      ><span>Codume Studio / 01</span>
+    </footer>
+    <div id="toast" role="status"></div>
+    <input type="file" id="file" accept=".json,application/json" hidden />
+    <dialog id="table-dialog">
+      <form id="table-form">
+        <h2>Nova tabela</h2>
+        <p class="subtle">Dê nome a uma entidade do seu modelo.</p>
+        <label for="table-name">Nome da tabela</label
+        ><input
+          id="table-name"
+          placeholder="ex.: projects"
+          required
+          pattern="[a-z_][a-z0-9_]*"
+          maxlength="50"
+        />
+        <p class="hint">
+          Letras minúsculas, números e sublinhado. Comece por uma letra.
+        </p>
+        <p id="table-error" class="error"></p>
+        <div class="dialog-actions">
+          <button type="button" data-close>Cancelar</button
+          ><button class="primary">Criar tabela</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="field-dialog">
+      <form id="field-form">
+        <h2 id="field-title">Novo campo</h2>
+        <div class="row">
+          <div>
+            <label for="field-name">Nome</label
+            ><input
+              id="field-name"
+              required
+              pattern="[a-z_][a-z0-9_]*"
+              maxlength="50"
+            />
+          </div>
+          <div>
+            <label for="field-type">Tipo PostgreSQL</label
+            ><select id="field-type"></select>
+          </div>
+        </div>
+        <div class="checks">
+          <label><input id="field-pk" type="checkbox" />PK</label
+          ><label><input id="field-unique" type="checkbox" />Único</label
+          ><label
+            ><input id="field-required" type="checkbox" />Obrigatório</label
+          >
+        </div>
+        <label for="field-ref">Referência (FK)</label
+        ><select id="field-ref"></select>
+        <p class="hint">
+          Selecione uma PK simples ou um campo único do mesmo tipo. FK única
+          representa 1:1; as demais representam 1:N. N:N usa uma tabela
+          associativa.
+        </p>
+        <p id="field-error" class="error"></p>
+        <div class="dialog-actions">
+          <button type="button" data-close>Cancelar</button
+          ><button class="primary">Salvar campo</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="sql-dialog">
+      <h2>Seu modelo em PostgreSQL</h2>
+      <p class="hint">
+        DDL estrutural: tabelas, PKs, unicidade, campos obrigatórios e FKs.
+        Regras de negócio, índices adicionais e migrações exigem revisão.
+      </p>
+      <textarea
+        id="sqltext"
+        readonly
+        aria-label="SQL gerado"
+        spellcheck="false"
+      ></textarea>
+      <div class="dialog-actions">
+        <button data-close>Fechar</button
+        ><button id="download-sql" class="primary">Baixar .sql</button>
+      </div>
+    </dialog>
+    <dialog id="help-dialog">
+      <h2>Desenhe. Conecte. Construa.</h2>
+      <ol class="help-list">
+        <li>Crie uma tabela e selecione-a no diagrama.</li>
+        <li>
+          No painel lateral, adicione campos e marque PK, único ou obrigatório.
+        </li>
+        <li>Edite um campo e escolha sua referência para criar uma FK.</li>
+        <li>
+          Arraste o cabeçalho das tabelas para organizar. Arraste o fundo para
+          navegar.
+        </li>
+        <li>Use Enquadrar para ver tudo; a roda do mouse controla o zoom.</li>
+        <li>Exporte JSON para backup. SQL gera o esquema PostgreSQL.</li>
+      </ol>
+      <p class="note">
+        Cardinalidade na linha: 1 ou 0..1 no lado referenciado; 0..N ou 0..1 no
+        lado que contém a FK. O banco não obriga um registro pai a ter filhos.
+        Chaves primárias compostas são aceitas; FKs compostas não estão
+        disponíveis nesta versão.
+      </p>
+      <p class="hint">
+        Ctrl/Cmd+Z desfaz; Ctrl/Cmd+Shift+Z refaz. O exemplo é um recorte
+        didático, não o DER completo da Codume. Funciona offline, sem enviar seu
+        modelo a servidores.
+      </p>
+      <div class="dialog-actions">
+        <button data-close class="primary">Vamos construir</button>
+      </div>
+    </dialog>
+    <!-- Módulos precisam ser servidos por HTTP. Execute npm start. -->
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

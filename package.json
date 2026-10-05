@@ -1,0 +1,20 @@
+{
+  "name": "codume-studio",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Editor visual de DER com JavaScript modular e guia de leitura",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/core.test.js",
+    "test:ui": "node tests/ui.test.js",
+    "test:sql": "node tests/sql.test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0",
+    "@electric-sql/pglite": "0.5.8"
+  }
+}
