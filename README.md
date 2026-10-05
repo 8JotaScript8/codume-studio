@@ -4,7 +4,6 @@ Editor visual de DER com HTML, CSS e JavaScript modular. Crie tabelas e relacion
 
 ![Editor visual](docs/preview.png)
 
-**Comece pelo [guia de leitura de código](docs/GUIA-DE-CODIGO.md).** Ele acompanha a criação de uma tabela linha por linha, depois explica validação, histórico, renderização, arquivos e arraste.
 
 ## Abrir no computador
 
