@@ -40,8 +40,6 @@ Antes de mudar de versão, exporte JSON no aplicativo antigo. Abra a versão mod
 - Salvamento local e backup em JSON.
 - SQL de criação de tabelas e relacionamentos para PostgreSQL.
 
-O exemplo inicial contém seis tabelas de usuários e perfis da Codume; não é o DER completo do marketplace.
-
 ## Organização
 
 | Arquivo | Responsabilidade |
